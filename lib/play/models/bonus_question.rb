@@ -1,5 +1,5 @@
 
-## NB: just use namespace SportDB::Models (not SportDB::Models::Market)
+## NB: just use namespace SportDB::Models (not SportDB::Models::Play)
 
 module SportDB::Models
 
