@@ -11,6 +11,9 @@ class CreateDB
   
     ActiveRecord::Schema.define do
 
+## NB: assumes a table users already exists with a col key
+##  lets add a check? why? why not?
+    
 change_table :games do |t|
   t.boolean    :locked, :null => false, :default => false
 end
@@ -18,14 +21,6 @@ end
 #####################################
 ## new tables / create tables
 ####################################
-
-create_table :users do |t|
-  t.string  :key,             :null => false   # import/export key
-  t.timestamps
-end
-
-add_index :users, :key,   :unique => true 
-
 
 create_table :pools do |t|
   t.references  :event,  :null => false
