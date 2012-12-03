@@ -5,7 +5,16 @@
 require 'sportdb/play/version'
 
 require 'sportdb/play/schema'
+require 'sportdb/play/models/bonus_point'
+require 'sportdb/play/models/bonus_question'
+require 'sportdb/play/models/bonus_round'
+require 'sportdb/play/models/bonus_tip'
+require 'sportdb/play/models/game'
 require 'sportdb/play/models/play'
+require 'sportdb/play/models/point'
+require 'sportdb/play/models/pool'
+require 'sportdb/play/models/tip'
+require 'sportdb/play/models/user'
 
 
 module SportDB::Play
