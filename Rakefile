@@ -12,7 +12,7 @@ Hoe.spec 'sportdb-play' do
   self.summary = 'sportdb plugin for plays (predictions, betting pool, etc.)'
   self.description = summary
 
-  self.urls    = ['http://geraldb.github.com/sport.db']
+  self.urls    = ['https://github.com/geraldb/sport.db-play']
   
   self.author  = 'Gerald Bauer'
   self.email   = 'opensport@googlegroups.com'
