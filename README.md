@@ -1,9 +1,7 @@
-# sport.db-play
+# sportdb-play
 
 Open sports database (sport.db) plugin for plays (predictions,
 betting pools, etc.)
-
-https://github.com/openbookie/sport.db.play
 
 * home  :: [github.com/openbookie/sport.db.play](https://github.com/openbookie/sport.db.play)
 * bugs  :: [github.com/openbookie/sport.db.play/issues](https://github.com/openbookie/sport.db.play/issues)
@@ -18,7 +16,7 @@ TBD
 
 ## License
 
-The `sport.db-play` scripts are dedicated to the public domain.
+The `sportdb-play` scripts are dedicated to the public domain.
 Use it as you please with no restrictions whatsoever.
 
 ## Questions? Comments?
