@@ -1,8 +1,8 @@
 # encoding: utf-8
 
-## NB: just use namespace SportDB::Models (not SportDB::Models::Play)
+## NB: just use namespace SportDb::Models (not SportDb::Models::Play)
 
-module SportDB::Models
+module SportDb::Models
 
 
 class Point < ActiveRecord::Base
@@ -52,4 +52,4 @@ class Point < ActiveRecord::Base
 end  # class Point
 
 
-end  # module SportDB::Models
+end  # module SportDb::Models

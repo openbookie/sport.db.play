@@ -1,7 +1,7 @@
 
-## NB: just use namespace SportDB::Models (not SportDB::Models::Play)
+## NB: just use namespace SportDb::Models (not SportDb::Models::Play)
 
-module SportDB::Models
+module SportDb::Models
 
 
 class BonusTip < ActiveRecord::Base
@@ -13,4 +13,5 @@ class BonusTip < ActiveRecord::Base
 end # class BonusTip
 
 
-end  # module SportDB::Models
+end  # module SportDb::Models
+

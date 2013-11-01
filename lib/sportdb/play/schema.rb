@@ -1,15 +1,8 @@
-module SportDB::Play
+module SportDb::Play
 
-class CreateDB
+class CreateDb < ActiveRecord::Migration
 
-## make models available in sportdb module by default with namespace
-#  e.g. lets you use Team instead of Models::Team 
-  include SportDB::Models
-
-
-  def self.up
-  
-    ActiveRecord::Schema.define do
+def up
 
 ## NB: assumes a table users already exists with a col key
 ##  lets add a check? why? why not?
@@ -17,6 +10,7 @@ class CreateDB
 change_table :games do |t|
   t.boolean    :locked, :null => false, :default => false
 end
+
 
 #####################################
 ## new tables / create tables
@@ -61,14 +55,16 @@ create_table :tips do |t|
   t.references :game, :null => false
   t.integer    :score1
   t.integer    :score2
-  t.integer    :score3    # verlaengerung (opt)
-  t.integer    :score4
-  t.integer    :score5    # elfmeter (opt)
-  t.integer    :score6
-  t.string     :toto12x      # 1,2,X,nil  calculate on save
+  t.integer    :score1et    # verlaengerung (opt)  - extra time/e.t
+  t.integer    :score2et  
+  t.integer    :score1p    # elfmeter (opt)
+  t.integer    :score2p
+  t.integer    :winner90      # 1,2,0,nil  calculate on save
+  t.integer    :winner        # 1,2,0,nil  calculate on save
 
   t.timestamps
 end
+
 
 add_index :tips, [:user_id,:pool_id,:game_id], :unique => true 
 add_index :tips, :user_id
@@ -141,13 +137,14 @@ end
 
 add_index :bonus_points, [:user_id,:pool_id,:round_id], :unique => true
 
-    end # block Schema.define
-
-    Prop.create!( key: 'db.schema.sport.play.version', value: SportDB::Play::VERSION )
-
-  end # method self.up
-
-end # class CreateDB
+end # method up
 
 
-end # module SportDB::Play
+def down
+  raise ActiveRecord::IrreversibleMigration
+end
+
+end # class CreateDb
+
+
+end # module SportDb::Play

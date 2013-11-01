@@ -17,9 +17,6 @@ tmp
 _yardoc
 doc/
 
-# ignore komodo project files
-
-*.kpf
 
 
 

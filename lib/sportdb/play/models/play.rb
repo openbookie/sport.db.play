@@ -1,7 +1,7 @@
 
-## NB: just use namespace SportDB::Models (not SportDB::Models::Play)
+## NB: just use namespace SportDb::Models (not SportDb::Models::Play)
 
-module SportDB::Models
+module SportDb::Models
 
 class Play < ActiveRecord::Base
   
@@ -36,13 +36,15 @@ class Play < ActiveRecord::Base
   
   ## todo/fix: can it be done w/ a has_many macro and a condition?
   def tips
-    recs = Tip.where( :pool_id => pool_id, :user_id => user_id ).all
+    ## nb: removed .all() - check if still working; should - but never know
+    recs = Tip.where( pool_id: pool_id, user_id: user_id )
     recs
   end
 
   ## todo/fix: can it be done w/ a has_many macro and a condition?
   def complete_rankings  # fix rename to points and remove points column from play table??
-    recs = Point.where( :pool_id => pool_id, :user_id => user_id ).joins( :round ).order('rounds.pos').all
+    ## nb: removed .all() - check if still working; should - but never know
+    recs = Point.where( pool_id: pool_id, user_id: user_id ).joins( :round ).order('rounds.pos')
     recs
   end
 
@@ -56,4 +58,4 @@ class Play < ActiveRecord::Base
 end   # class Play
 
 
-end  # module SportDB::Models
+end  # module SportDb::Models

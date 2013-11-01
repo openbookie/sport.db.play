@@ -1,34 +1,169 @@
 # encoding: utf-8
 
 
-## NB: just use namespace SportDB::Models (not SportDB::Models::Play)
+## NB: just use namespace SportDb::Models (not SportDb::Models::Play)
 
-module SportDB::Models
+module SportDb::Models
 
 
 class Tip < ActiveRecord::Base
-  
+
   belongs_to :user
   belongs_to :pool
   belongs_to :game
 
-  before_save :calc_toto12x
+  before_save :calc_winner
+
+
+  def calc_winner
+    if score1.nil? || score2.nil?
+      self.winner90 = nil
+      self.winner   = nil
+    else
+      if score1 > score2
+        self.winner90 = 1
+      elsif score1 < score2
+        self.winner90 = 2
+      else # assume score1 == score2 - draw
+        self.winner90 = 0
+      end
+
+      ## todo/fix:
+      #  check for next-game/pre-game !!!
+      #    use 1st leg and 2nd leg - use for winner too
+      #  or add new winner_total or winner_aggregated method ???
+
+      ## check for penalty  - note: some games might only have penalty and no extra time (e.g. copa liberatadores)
+      if score1p.present? && score2p.present?
+        if score1p > score2p
+          self.winner = 1
+        elsif score1p < score2p
+          self.winner = 2
+        else
+          # issue warning! - should not happen; penalty goes on until winner found!
+          puts "*** warn: should not happen; penalty goes on until winner found"
+        end
+      ## check for extra time
+      elsif score1et.present? && score2et.present?
+        if score1et > score2et
+          self.winner = 1
+        elsif score1et < score2et
+          self.winner = 2
+        else # assume score1et == score2et - draw
+          self.winner = 0
+        end
+      else
+        # assume no penalty and no extra time; same as 90min result
+        self.winner = self.winner90
+      end
+    end
+  end
+
+
+ ############ some scopes for stats
+ 
+ # -- for now always use winner90 (that is, after 90 mins; not extra time or penality etc.)
+
+  scope :complete,  -> { where( 'winner90 is not null' ) }
+  scope :complete1, -> { where( 'winner90 is not null' ).where( winner90: 1 ) }
+  scope :complete2, -> { where( 'winner90 is not null' ).where( winner90: 2 ) }
+  scope :completex, -> { where( 'winner90 is not null' ).where( winner90: 0 ) }
+  scope :complete0, -> { where( 'winner90 is not null' ).where( winner90: 0 ) }  # alias for completex
+ 
+  scope :incomplete, -> { where( 'winner90 is null' ) }
+
+
+  def toto12x() toto1x2; end # alias for toto12x - todo/fix: use ruby alias helper
+  def toto1x2
+    ## note: will return string e.g. 1-X-2 (winner will return int e.g. 1-0-2)
+    
+    ## fix: use switch/when expr/stmt instead of ifs
+    value = winner90   # 1 0 2  1 => team 1 0 => draw 2 => team
+    if value == 0
+      'X'
+    elsif value == 1
+      '1'
+    elsif value == 2
+      '2'
+    elsif value == -1
+      nil  # ??? - unknown -- include --??? why? why not??
+    else
+      nil
+    end
+  end
+
+
+  ### getter/setters for deprecated attribs (score3,4,5,6)
+
+  def score3
+    score1et
+  end
+
+  def score4
+    score2et
+  end
   
+  def score1ot
+    score1et
+  end
+
+  def score2ot
+    score2et
+  end
+
+  def score5
+    score1p
+  end
+
+  def score6
+    score2p
+  end
+
+  def score3=(value)
+    self.score1et = value
+  end
+
+  def score4=(value)
+    self.score2et = value
+  end
+
+  def score1ot=(value)
+    self.score1et = value
+  end
+
+  def score2ot=(value)
+    self.score2et = value
+  end
+
+  def score5=(value)
+    self.score1p = value
+  end
+
+  def score6=(value)
+    self.score2p = value
+  end
+
+
+
   ## todo: rename to find_by_play_and_game ????
   def self.find_by_user_and_pool_and_game( user_arg, pool_arg, game_arg )
-    recs = self.where( :user_id => user_arg.id, :pool_id => pool_arg.id, :game_id => game_arg.id )
+    recs = self.where( user_id: user_arg.id,
+                       pool_id: pool_arg.id,
+                       game_id: game_arg.id )
     recs.first
   end
-    
-    
+
+
   def export?
     # check if user entered some data
     # - do NOT export nil records (all scores blank)
     
-    (score1.blank? && score2.blank? && score3.blank? && score4.blank? && score5.blank? && score6.blank?)==false
+    (score1.blank?   && score2.blank?   &&
+     score1et.blank? && score2et.blank? &&
+     score1p.blank?  && score2p.blank?) == false
   end
 
-  
+
   def calc_points_worker
     pts = 0
 
@@ -47,32 +182,41 @@ class Tip < ActiveRecord::Base
       # ergebnis richtig?
       if game.score1 == score1 && game.score2 == score2
         pts += 2
+      else
+        # 2nd chance!
+        # -- check 4+ rule for result
+        if( [game.score1,4].min == [score1,4].min &&
+            [game.score2,4].min == [score2,4].min )
+          pts += 2
+        end
       end
-      
-      ## check n.V.
-      
-      if (game.score3.present? && game.score4.present? && score3.present? && score4.present?)
+
+
+      ## check n.V. - after extra time/a.e.t
+
+      if( game.score1et.present? && game.score2et.present? && score1et.present? && score2et.present?)
         
-         if(((game.score3 == game.score4) && (score3 == score4)) ||
-            ((game.score3 >  game.score4) && (score3 >  score4)) ||
-            ((game.score3 <  game.score4) && (score3 <  score4)))
+         if(((game.score1et == game.score2et) && (score1et == score2et)) ||
+            ((game.score1et >  game.score2et) && (score1et >  score2et)) ||
+            ((game.score1et <  game.score2et) && (score1et <  score2et)))
                 pts += 1
          end
       end
-      
+
       ## check i.E.
 
-      if (game.score5.present? && game.score6.present? && score5.present? && score6.present?)
+      if( game.score1p.present? && game.score2p.present? && score1p.present? && score2p.present?)
             
-         if(((game.score5 >  game.score6) && (score5 >  score6)) ||
-            ((game.score5 <  game.score6) && (score5 <  score6)))
+         if(((game.score1p > game.score2p) && (score1p > score2p)) ||
+            ((game.score1p < game.score2p) && (score1p < score2p)))
                 pts += 1
          end
       end
     
     pts
   end
-    
+
+
   def calc_points
     pts = 0
     pts = calc_points_worker()  if complete?
@@ -172,24 +316,12 @@ class Tip < ActiveRecord::Base
       end
     end
   end
-    
-  def calc_toto12x
-    if score1.nil? || score2.nil?
-      self.toto12x = nil
-    elsif score1 == score2
-      self.toto12x = 'X'
-    elsif score1 > score2
-      self.toto12x = '1'
-    elsif score1 < score2
-      self.toto12x = '2'
-    end
-  end
-  
+
 
   def complete?
     game.score1.present? && game.score2.present? && score1.present? && score2.present?
   end
-  
+
   def incomplete?
     complete? == false
   end
@@ -210,16 +342,20 @@ class Tip < ActiveRecord::Base
   end
 
   def score_str
+
+    ## fix: check game
+    #  use buf and allow result90 plus penalty only too
+
     ## fix: use new game.toto12x instead of game.over ??? (doesn't depend on time) 
     if score1.blank? && score2.blank? && game.over?
       # return no data marker (e.g. middot) if not touched by user
       '·'
     else
       str = ''
-      if score5.present? && score6.present?    # im Elfmeterschiessen i.E.?
-        str = "#{score1_str} : #{score2_str} / #{score3} : #{score4} n.V. / #{score5} : #{score6} i.E."
-      elsif score3.present? && score4.present?  # nach Verlaengerung n.V.?
-        str = "#{score1_str} : #{score2_str} / #{score3} : #{score4} n.V."
+      if score1p.present? && score2p.present?    # im Elfmeterschiessen i.E.?
+        str = "#{score1_str} : #{score2_str} / #{score1et} : #{score2et} n.V. / #{score1p} : #{score2p} i.E."
+      elsif score1et.present? && score2et.present?  # nach Verlaengerung n.V.?
+        str = "#{score1_str} : #{score2_str} / #{score1et} : #{score2et} n.V."
       else
         str = "#{score1_str} : #{score2_str}"
       end
@@ -233,15 +369,10 @@ class Tip < ActiveRecord::Base
       str
     end
   end
-  
-  def score1_str
-    if score1.blank? then '?' else score1.to_s end
-  end
 
-  def score2_str
-    if score2.blank? then '?' else score2.to_s end
-  end
+  def score1_str()  score1.blank?  ? '?' : score1.to_s;  end
+  def score2_str()  score2.blank?  ? '?' : score2.to_s;  end
 
 end # class Tip
 
-end  # module SportDB::Models
+end  # module SportDb::Models

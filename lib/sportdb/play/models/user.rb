@@ -1,9 +1,9 @@
 # encoding: utf-8
 
 
-## NB: just use namespace SportDB::Models (not SportDB::Models::Play)
+## NB: just use namespace SportDb::Models (not SportDb::Models::Play)
 
-module SportDB::Models
+module SportDb::Models
 
 
 class User < ActiveRecord::Base
@@ -15,4 +15,4 @@ class User < ActiveRecord::Base
 
 end  # class User
 
-end  # module SportDB::Models
+end  # module SportDb::Models
