@@ -7,6 +7,7 @@ betting pools, etc.)
 * bugs  :: [github.com/openbookie/sport.db.play/issues](https://github.com/openbookie/sport.db.play/issues)
 * gem   :: [rubygems.org/gems/sportdb-play](https://rubygems.org/gems/sportdb-play)
 * rdoc  :: [rubydoc.info/gems/sportdb-play](http://rubydoc.info/gems/sportdb-play)
+* forum :: [groups.google.com/group/opensport](https://groups.google.com/group/opensport)
 
 
 ## Usage
