@@ -37,4 +37,4 @@ end  # module SportDb::Play
 
 
 ## say hello
-puts SportDb::Play.banner
+puts SportDb::Play.banner    if $DEBUG

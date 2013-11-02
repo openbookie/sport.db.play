@@ -44,8 +44,8 @@ class Game
   def tip_x_style_class
     toto1x2 == 'X' ? ' bingo ' : ' '
   end
-  
- 
+
+
   ############ some methods for stats
   
   def complete_tips()   tips.complete;  end
@@ -59,8 +59,8 @@ class Game
   def tip_2_count()     tips.complete2.count();  end
   def tip_x_count()     tips.completex.count();  end
 
-  def tip_12x_count()   tips.commplete.count();  end
-  def tip_1x2_count()   tips.commplete.count();  end   # alias for tip_12x_count // or just add/use tip_count add too??
+  def tip_12x_count()   tips.complete.count();  end
+  def tip_1x2_count()   tips.complete.count();  end   # alias for tip_12x_count // or just add/use tip_count add too??
 
 
 end # class Game
