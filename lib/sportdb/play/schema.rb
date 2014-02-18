@@ -1,4 +1,5 @@
-module SportDb::Play
+module SportDb
+  module Play
 
 class CreateDb < ActiveRecord::Migration
 
@@ -8,7 +9,7 @@ def up
 ##  lets add a check? why? why not?
     
 change_table :games do |t|
-  t.boolean    :locked, :null => false, :default => false
+  t.boolean    :locked,  null: false, default: false
 end
 
 
@@ -146,5 +147,6 @@ end
 
 end # class CreateDb
 
+  end # module Play
+end # module SportDb
 
-end # module SportDb::Play

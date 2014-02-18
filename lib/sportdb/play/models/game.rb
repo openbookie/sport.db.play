@@ -1,7 +1,8 @@
 
 
 
-module SportDb::Models
+module SportDb
+  module Model
 
 
 ### NB: extend Game model from sport.db gem
@@ -33,17 +34,9 @@ class Game
   ## keep style helpers here? why? why not?
 
 
-  def tip_1_style_class
-    toto1x2 == '1' ? ' bingo ' : ' '
-  end
-
-  def tip_2_style_class
-    toto1x2 == '2' ? ' bingo ' : ' '
-  end
-
-  def tip_x_style_class
-    toto1x2 == 'X' ? ' bingo ' : ' '
-  end
+  def tip_1_style_class()  toto1x2 == '1' ? ' bingo ' : ' ';  end
+  def tip_2_style_class()  toto1x2 == '2' ? ' bingo ' : ' ';  end
+  def tip_x_style_class()  toto1x2 == 'X' ? ' bingo ' : ' ';  end
 
 
   ############ some methods for stats
@@ -66,4 +59,5 @@ class Game
 end # class Game
 
 
-end # module SportDb::Models
+  end # module Model
+end # module SportDb

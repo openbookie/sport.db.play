@@ -1,25 +1,22 @@
 
-## NB: just use namespace SportDb::Models (not SportDb::Models::Play)
+## NB: just use namespace SportDb::Model (not SportDb::Model::Play)
 
-module SportDb::Models
+module SportDb
+  module Model
+
 
 class Play < ActiveRecord::Base
-  
+
   belongs_to :user
   belongs_to :pool
-  
-  belongs_to :team1, :class_name => 'Team', :foreign_key => 'team1_id'
-  belongs_to :team2, :class_name => 'Team', :foreign_key => 'team2_id'
-  belongs_to :team3, :class_name => 'Team', :foreign_key => 'team3_id'
-  
 
-  def job_running!
-    @job_running = true
-  end
-  
-  def job_done!
-    @job_running = false
-  end
+  belongs_to :team1, class_name: 'Team', foreign_key: 'team1_id'
+  belongs_to :team2, class_name: 'Team', foreign_key: 'team2_id'
+  belongs_to :team3, class_name: 'Team', foreign_key: 'team3_id'
+
+
+  def job_running!()   @job_running = true;   end
+  def job_done!()      @job_running = false;  end
 
   def job_running?
     (@job_running ||= false) == true
@@ -58,4 +55,5 @@ class Play < ActiveRecord::Base
 end   # class Play
 
 
-end  # module SportDb::Models
+  end # module Model
+end  # module SportDb

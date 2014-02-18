@@ -17,7 +17,8 @@ require 'sportdb/play/models/tip'
 require 'sportdb/play/models/user'
 
 
-module SportDb::Play
+module SportDb
+  module Play
 
   def self.banner
     "sportdb-play/#{VERSION} on Ruby #{RUBY_VERSION} (#{RUBY_RELEASE_DATE}) [#{RUBY_PLATFORM}]"
@@ -30,10 +31,11 @@ module SportDb::Play
   
   def self.create
     CreateDb.new.up
-    WorldDb::Models::Prop.create!( key: 'db.schema.sport.play.version', value: VERSION )
+    WorldDb::Model::Prop.create!( key: 'db.schema.sport.play.version', value: VERSION )
   end
 
-end  # module SportDb::Play
+  end # module Play
+end  # module SportDb
 
 
 ## say hello

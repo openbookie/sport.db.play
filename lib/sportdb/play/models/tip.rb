@@ -1,9 +1,10 @@
 # encoding: utf-8
 
 
-## NB: just use namespace SportDb::Models (not SportDb::Models::Play)
+## NB: just use namespace SportDb::Model (not SportDb::Model::Play)
 
-module SportDb::Models
+module SportDb
+  module Model
 
 
 class Tip < ActiveRecord::Base
@@ -95,53 +96,19 @@ class Tip < ActiveRecord::Base
 
   ### getter/setters for deprecated attribs (score3,4,5,6)
 
-  def score3
-    score1et
-  end
-
-  def score4
-    score2et
-  end
+  def score3()    score1et;  end
+  def score4()    score2et;  end
+  def score1ot()  score1et;  end
+  def score2ot()  score2et;  end
+  def score5()    score1p;   end
+  def score6()    score2p;   end
   
-  def score1ot
-    score1et
-  end
-
-  def score2ot
-    score2et
-  end
-
-  def score5
-    score1p
-  end
-
-  def score6
-    score2p
-  end
-
-  def score3=(value)
-    self.score1et = value
-  end
-
-  def score4=(value)
-    self.score2et = value
-  end
-
-  def score1ot=(value)
-    self.score1et = value
-  end
-
-  def score2ot=(value)
-    self.score2et = value
-  end
-
-  def score5=(value)
-    self.score1p = value
-  end
-
-  def score6=(value)
-    self.score2p = value
-  end
+  def score3=(value)    self.score1et = value; end
+  def score4=(value)    self.score2et = value; end
+  def score1ot=(value)  self.score1et = value; end
+  def score2ot=(value)  self.score2et = value; end
+  def score5=(value)    self.score1p = value;  end
+  def score6=(value)    self.score2p = value;  end
 
 
 
@@ -375,4 +342,6 @@ class Tip < ActiveRecord::Base
 
 end # class Tip
 
-end  # module SportDb::Models
+  end # module Model
+end  # module SportDb
+
