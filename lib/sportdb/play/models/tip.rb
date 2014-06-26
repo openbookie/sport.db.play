@@ -137,7 +137,7 @@ class Tip < ActiveRecord::Base
       if(((game.score1 == game.score2) && (score1 == score2)) ||
          ((game.score1 >  game.score2) && (score1 >  score2)) ||
          ((game.score1 <  game.score2) && (score1 <  score2)))
-          pts += 1
+          pts += 2
       end
 
       # tordifferenz richtig? todo: auch fuer unentschieden???
@@ -154,7 +154,7 @@ class Tip < ActiveRecord::Base
         # -- check 4+ rule for result
         if( [game.score1,4].min == [score1,4].min &&
             [game.score2,4].min == [score2,4].min )
-          pts += 2
+          #  pts += 2
         end
       end
 
