@@ -162,11 +162,21 @@ class Tip < ActiveRecord::Base
       ## check n.V. - after extra time/a.e.t
 
       if( game.score1et.present? && game.score2et.present? && score1et.present? && score2et.present?)
-        
+
          if(((game.score1et == game.score2et) && (score1et == score2et)) ||
             ((game.score1et >  game.score2et) && (score1et >  score2et)) ||
             ((game.score1et <  game.score2et) && (score1et <  score2et)))
-                pts += 1
+
+               ### note: disqualify (no pts) if tip for regular time is NOT draw/tie
+               ###
+               if score1 == score2
+                 pts += 1
+                
+                 # ergebnis richtig? extra point
+                 if game.score1et == score1et && game.score2et == score2et
+                   pts += 1
+                 end
+               end
          end
       end
 
@@ -176,10 +186,20 @@ class Tip < ActiveRecord::Base
             
          if(((game.score1p > game.score2p) && (score1p > score2p)) ||
             ((game.score1p < game.score2p) && (score1p < score2p)))
-                pts += 1
+
+               ### note: disqualify (no pts) if tip for regular and extra time is NOT draw/tie
+               ###
+               if score1 == score2 && score1et == score2et
+                 pts += 1
+
+                 # ergebnis richtig? extra point
+                 if game.score1p == score1p && game.score2p == score2p
+                   pts += 1
+                 end
+               end
          end
       end
-    
+
     pts
   end
 
@@ -196,9 +216,9 @@ class Tip < ActiveRecord::Base
     buf
   end
 
-  
+
   ## todo: use tip-fail, tip-bingo, etc.
-  
+
   def bingo_style_class
     if incomplete?
       # show missing label for upcoming games only
@@ -213,11 +233,11 @@ class Tip < ActiveRecord::Base
       pts = calc_points()
       if pts == 0
         'fail'
-      elsif pts == 1
+      elsif pts == 1 || pts == 2
         'bingo'
-      elsif pts == 2
-        'bingoo'
       elsif pts == 3
+        'bingoo'
+      elsif pts >= 4     # note; use greater 4 for now - add more bingooo states? how to deal w/ custom points - normalize - how ??
         'bingooo'
       else
         ''  # unknown state; return empty (css) class
@@ -240,11 +260,11 @@ class Tip < ActiveRecord::Base
       pts = calc_points()
       if pts == 0
         ''
-      elsif pts == 1
+      elsif pts == 1 || pts == 2
         'bingo'
-      elsif pts == 2
-        'bingoo'
       elsif pts == 3
+        'bingoo'
+      elsif pts >= 4
         'bingooo'
       else
         ''  # unknown state; return empty (css) class
@@ -278,6 +298,16 @@ class Tip < ActiveRecord::Base
         '♣♣ 2 Pkte - Jaaa!'
       elsif pts == 3
         '♣♣♣ 3 Pkte - Jaaaaa!'
+      elsif pts == 4
+        '♣♣♣ 4 Pkte - Jaaaaaa!'
+      elsif pts == 5
+        '♣♣♣ 5 Pkte - Jaaaaaaa!'
+      elsif pts == 6
+        '♣♣♣ 6 Pkte - Jaaaaaaaa!'
+      elsif pts == 7
+        '♣♣♣ 7 Pkte - Jaaaaaaaaa!'
+      elsif pts == 8
+        '♣♣♣ 8 Pkte - Wahnsinnn!'   # max points?  2pt+2pt + (1pt+1pt) + (1pt+1pt)
       else
         ''  # unknown state; return empty (css) class
       end
@@ -326,7 +356,7 @@ class Tip < ActiveRecord::Base
       else
         str = "#{score1_str} : #{score2_str}"
       end
- 
+
 ##### FIX: make extendable!!
 #      if calc
 #        str_calc_team1 = calc_team1_id.blank? ? '' : calc_team1.tag
