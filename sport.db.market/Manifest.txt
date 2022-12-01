@@ -1,0 +1,15 @@
+History.md
+Manifest.txt
+README.md
+Rakefile
+lib/sportdb/market.rb
+lib/sportdb/market/loader.rb
+lib/sportdb/market/models/event_quote.rb
+lib/sportdb/market/models/game.rb
+lib/sportdb/market/models/group_quote.rb
+lib/sportdb/market/models/quote.rb
+lib/sportdb/market/models/service.rb
+lib/sportdb/market/reader.rb
+lib/sportdb/market/schema.rb
+lib/sportdb/market/version.rb
+lib/sportdb_plugin.rb
